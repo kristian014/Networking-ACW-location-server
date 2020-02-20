@@ -8,6 +8,11 @@ namespace locationserver
 {
     class Program
     {
+        static int PortNumber = 43;
+        String Servername = "whois.net.dcs.hull.ac.uk";
+        static String Protocol = "whois";
+        
+       
         static Dictionary<string, string> TheLocations = new Dictionary<String, String>();
         static void Main(string[] args)
         {
@@ -21,8 +26,9 @@ namespace locationserver
             TcpListener listener;
             Socket connection;
             NetworkStream socketStream;
+            
 
-            listener = new TcpListener(IPAddress.Any, 43);
+            listener = new TcpListener(IPAddress.Any, PortNumber);
             while (true)
             {
                 try
@@ -70,15 +76,43 @@ namespace locationserver
                 String[] Words = line.Split(new char[] { ' ' }, 2);
                 String username = null, location = null;
 
-
-
-
-                if (Words.Length < 1)
+                List<string> ServerInfo = new List<string>();
+                for (int i = 0; i <Words.Length; i++)
                 {
+                    switch (Words[i])
+                    {
+                        
+                        case "-h0":
+                            Protocol = Words[i];
+                            sw.WriteLine("");
+                            break;
+
+                        case "-h1":
+
+                            Protocol = Words[i];
+                            break;
+
+                        case "-h9":
+
+                            Protocol = Words[i];
+                            break;
+
+
+                        default:
+                            ServerInfo.Add(Words[i]);
+                            //Console.WriteLine($"An unexpected value ({caseSwitch})");
+                            break;
+                    }
+
+                }
+
+
+                if (ServerInfo.Count < 1)
+                { 
                     Console.WriteLine("Please enter words more than one ");
                 }
 
-                else if (Words.Length == 1)
+                else if (ServerInfo.Count == 1)
                 {
                     // We have a lookup
                     username = Words[0];
