@@ -11,12 +11,10 @@ namespace locationserver
     {
         static Dictionary<string, string> TheLocations = new Dictionary<String, String>();
         static int PortNumber = 43;
-        static String Servername = null;
-        static string Protocol = null;
-        static String Username = null;
+            static String Username = null;
         static String location = null;
 
-
+        //
         static void Main(string[] args)
         {
             RunServer();
@@ -24,8 +22,6 @@ namespace locationserver
         static void RunServer()
 
         {
-
-
             TcpListener listener;
             Socket connection;
             NetworkStream socketStream;
@@ -42,7 +38,6 @@ namespace locationserver
 
 
                     socketStream = new NetworkStream(connection);
-
                     Console.WriteLine("Conection Received");
 
                     DoRequest(socketStream);
@@ -78,16 +73,12 @@ namespace locationserver
 
 
                 string line = sr.ReadLine();
-                // for (int i = 0;  i<line.Length; i++)
-                //{
-                //Console.Write(line);
-                // }
-
+                
                 Console.WriteLine("Response Received: " + line);
 
 
 
-                //Servername = HTTPLINES[2].Trim();
+            
                 if (line.StartsWith("GET /?name=") && (line.EndsWith(" HTTP/1.1")))
 
                 {
@@ -129,28 +120,17 @@ namespace locationserver
                         }
 
 
-                    
-
-
-
                 }
 
                 else if (line.Equals("POST / HTTP/1.1") && (sr.Peek() >= 0))
                 {
 
 
-                    Console.WriteLine("Im in the 1.1 post hello");
-
-
                     string ReadUsername_And_LocationLine = sr.ReadLine(); // HOST:
                     ReadUsername_And_LocationLine = sr.ReadLine(); // Content-Length:
                     int content_length = int.Parse(ReadUsername_And_LocationLine.Split(' ')[1]);
                     sr.ReadLine();
-                    //sr.ReadLine();
-                    //while (sr.ReadLine() != "")
-                    //{
-                    //    // Continue
-                    //}
+                   
                     ReadUsername_And_LocationLine = "";
                     try
                     {
@@ -169,55 +149,35 @@ namespace locationserver
                     Username = GetLocationAndUsername[1];
                     location = GetLocationAndUsername[3];
 
-
-
-                    Console.WriteLine(location);
-                    Console.WriteLine(Username);
-
-
-                    TheLocations[Username] = location;
+                     TheLocations[Username] = location;
                     sw.WriteLine("HTTP/1.1 200 OK\r\n");
                     sw.WriteLine("Content-Type: text/plain\r\n\r\n");
                     sw.WriteLine();
                     sw.Flush();
-                  
-                    Console.WriteLine("HTTP/1.1 200 OK\r\n");
+                  Console.WriteLine("HTTP/1.1 200 OK\r\n");
                     Console.WriteLine("Content-Type: text/plain\r\n");
 
-                  
-                 
-
-
                 }
-
-
 
 
                 else if ((line.StartsWith("GET /?")) && (line.EndsWith(" HTTP/1.0")))
 
                 {
                     string[] HTTPLINES = line.Split(new char[] { ' ' });
-                    // if ((HTTPLINES[2] == "HTTP/1.0"))
-                    // {
+                   
                     Console.WriteLine("HTTP 1.0 DONE SUCCESSFULLY");
                     Username = HTTPLINES[1].TrimStart('/', '?');
-                    //string SecondLineForHTTP1_0;
-                    // SecondLineForHTTP1_0 = sr.ReadLine();
+                   
                     if (TheLocations.ContainsKey(Username))
                     {
-                        // the location can be found in the dictionary
-
-
-                        sw.WriteLine("HTTP/1.0 200 OK" + "\r\n");
+                         sw.WriteLine("HTTP/1.0 200 OK" + "\r\n");
                         sw.WriteLine("Content-Type: text/plain" + "\r\n\r\n");
                         sw.WriteLine();
                         sw.WriteLine(TheLocations[Username]);
                         sw.Flush();
                         Console.WriteLine("HTTP/1.0 200 OK");
                         Console.WriteLine("Content-Type: text/plain");
-                        //return;
-
-                    }
+                       }
 
                     else
                     {
@@ -225,34 +185,20 @@ namespace locationserver
                         sw.WriteLine("Content-Type: text/plain\r\n");
                         sw.WriteLine();
                         sw.Flush();
-                        //return;
+                    
                     }
-
-                    // }
-
-
 
                 }
                 else if ((line.StartsWith("POST")) && (line.EndsWith(" HTTP/1.0")) && (sr.Peek() >= 0))
                 {
                     string[] HTTPLINES = line.Split(new char[] { ' ' });
-                    //if ((HTTPLINES[2] == "HTTP/1.0"))
-                    // {
-
+                   
                     Username = HTTPLINES[1].TrimStart('/');
                     string ContentLenght;
                     ContentLenght = sr.ReadLine();
                     string OptionalHeader;
                     OptionalHeader = sr.ReadLine();
-
-                    //location = null;
-
-                    // code breaks from here.
-                    //   for(int i = 0; i < ContentLenght.Length; i++)
-                    //  {
-                    //      location += (char)sr.Read();
-                    // }
-                    location = sr.ReadLine();
+                 location = sr.ReadLine();
                     
                     TheLocations[Username] = location;
 
@@ -265,10 +211,7 @@ namespace locationserver
 
                 }
 
-
-
-
-                else if (line.StartsWith("GET /"))
+                     else if (line.StartsWith("GET /"))
                 {
                     string[] HTTPLINES = line.Split(new char[] { ' ' });
                     Username = HTTPLINES[1].TrimStart('/');
@@ -314,14 +257,11 @@ namespace locationserver
                     Read_ThirdLine = sr.ReadLine();
                     location = Read_ThirdLine.Trim();
 
-                    // if (TheLocations.ContainsKey(Username))
-                    // {
-                    // the location can be found in the dictionary
 
                     TheLocations[Username] = location;
                     sw.WriteLine("HTTP/0.9 200 OK");
                     sw.WriteLine("Content-Type: text/plain\r\n");
-                    // TheLocations[Username] = location;
+                  
                     sw.Flush();
                     Console.WriteLine("HTTP/0.9 200 OK\r\n");
                     Console.WriteLine("Content-Type: text/plain\r\n");
@@ -329,13 +269,10 @@ namespace locationserver
 
                 }
 
-
-
-
-                else
+                     else
                 {
                     string[] Words = line.Split(new char[] { ' ' }, 2);
-                    //Protocol = "Whois";
+                  
 
 
                     if (Words.Length < 1)
@@ -347,22 +284,21 @@ namespace locationserver
                     else if (Words.Length == 1)
                     {
 
-                        // We have a lookup
+                     
                         Username = Words[0];
 
                         if (TheLocations.ContainsKey(Username))
                         {
-                            // the location can be found in the dictionary
+                         
                             sw.WriteLine(TheLocations[Username]);
 
                         }
 
                         else
                         {
-                            // Oh no! This user is not known
-                            //location = "ERROR: no entries found";
+                          
                             sw.WriteLine("ERROR: no entries found");
-                            //Console.WriteLine("ERROR: no entries found");
+                           
                         }
                         //sw.WriteLine("OK");
                         sw.Flush();
@@ -386,11 +322,9 @@ namespace locationserver
                         else
                         {
                             TheLocations.Add(Username, location);
-                            //location = "ERROR: no entries found";
-                            // username = "Error: no entries found";
+                          
                         }
-                        //sw.WriteLine(Words[0] + " " + Words[1] );
-                        // location = TheLocations[username];
+                      
                         sw.WriteLine("OK\r\n");
                         sw.Flush();
                         Console.WriteLine(Words[0] + " " + Words[1]);
@@ -399,8 +333,6 @@ namespace locationserver
                     }
 
                 }
-
-
 
             }
             catch (Exception e)
