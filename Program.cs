@@ -82,7 +82,7 @@ namespace locationserver
 
         public static Logging Log;
         [STAThread]
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
 
             String filename = null;
@@ -102,26 +102,33 @@ namespace locationserver
                         break;
                 }
 
-                
-                if (UI == true)
-                {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-                    locationserverwindowsform serverForm = new locationserverwindowsform();
-                    Application.Run(serverForm);
-                }
 
             }
 
-           
+
 
             Log = new Logging(filename);
             // When the Runserver method is called, The server just waits for a connection 
             // to be made through the port number and can connect to any IP address
             // Also 
-            
+
+
+            if (UI == true)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                locationserverwindowsform serverForm = new locationserverwindowsform();
+                Application.Run(serverForm);
+                //Log = new Logging(filename);
+                // RunServer();
+                //writetimeout = int.Parse(serverForm.m_settimeout);
+                //readtimeout = int.Parse(serverForm.m_gettimeout);
+
+            }
+
             RunServer();
         }
+        
         public static void RunServer()
         {
             TcpListener listener;
@@ -178,9 +185,8 @@ namespace locationserver
                     StreamWriter sw = new StreamWriter(socketStream); //this reads
                     StreamReader sr = new StreamReader(socketStream);
 
-                    socketStream.WriteTimeout = 1000;
-                    socketStream.ReadTimeout = 1000;
-
+                    socketStream.WriteTimeout = writetimeout;
+                    socketStream.ReadTimeout = readtimeout;
 
                     line = sr.ReadLine();
 
@@ -489,6 +495,8 @@ namespace locationserver
 }
 /// <summary>
 /// Logging example from https://stackoverflow.com/questions/2954900/simple-multithread-safe-log-class
+/// 
+/// The WriteTolog method helps in keeping a log of the hostname, messages and status.
 /// </summary>
 
 public class Logging
@@ -523,6 +531,6 @@ public class Logging
             }
 
         }
-
     }
-}
+    }
+
