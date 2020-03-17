@@ -518,7 +518,7 @@ public class Logging
                 return;
             try
             {
-
+                // 
                 StreamWriter sw;
                 sw = File.AppendText(Logfile);
                 sw.WriteLine(line);
